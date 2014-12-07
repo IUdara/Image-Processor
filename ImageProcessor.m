@@ -511,7 +511,7 @@ if ~isempty(Y)
     A = zeros(height, width);
     
     opt = optThresholding(W);
-    mask = double(W>opt);
+    mask = double(W<opt);
     A = A + mask*255;
 
     Y = im2uint8(A);
@@ -663,7 +663,7 @@ if ~isempty(M)
     B = zeros(height, width);    
         
     opt = optThresholding(A);
-    mask = double(A>opt);
+    mask = double(A<opt);
     B = B + mask*255;
     M = im2uint8(B);  
     axes(handles.ivCopyCompare);
@@ -681,7 +681,7 @@ if ~isempty(Y)
     B = zeros(height, width);
     
     opt = optThresholding(A);
-    mask = double(A>opt);
+    mask = double(A<opt);
     B = B + mask*255;
     Y = im2uint8(B);
     showImageCopy(Y,handles.ivCopy,handles.pCopy);        
@@ -1094,7 +1094,7 @@ else
 end
 end
 
-% Calculating 7 invariant moments of the image, img
+% Calculating 7 invariant moments of the image, img (ref.[5])
 function im = invariantMoments(img)
 
 A = im2bw(img);
@@ -1143,7 +1143,7 @@ im(1,3) = (e(1,4) - 3*e(1,7))^2 + (3*e(1,6) - e(1,5))^2;    %phi3
 im(1,4) = (e(1,4) + e(1,7))^2 + (e(1,6) + e(1,5))^2;        %phi4
 im(1,5) = (e(1,4) - 3*e(1,7)) * (e(1,4) + e(1,7)) *((e(1,4) + e(1,7))^2 - 3*(e(1,6) + e(1,5))^2 ) + (3*e(1,6) - e(1,5)) * (e(1,6) + e(1,5)) * ( 3*(e(1,4) + e(1,7))^2 - (e(1,6) + e(1,5))^2 );  %phi5
 im(1,6) = (e(1,2) - e(1,3)) * ( (e(1,4) + e(1,7))^2 - (e(1,6) + e(1,5))^2 ) + 4 * e(1,1) * (e(1,4) + e(1,7)) * (e(1,6) + e(1,5));                                                               %phi6
-im(1,7) = (3*e(1,6) - e(1,4)) * (e(1,4) + e(1,7)) * ((e(1,4) + e(1,7))^2 - 3*(e(1,6) + e(1,5))^2 ) + (3*e(1,7) - e(1,4)) * (e(1,6) + e(1,5)) * ( 3*(e(1,4) + e(1,7))^2 - (e(1,6) + e(1,5))^2 ); %phi7
+im(1,7) = (3*e(1,6) - e(1,5)) * (e(1,4) + e(1,7)) * ((e(1,4) + e(1,7))^2 - 3*(e(1,6) + e(1,5))^2 ) + (3*e(1,7) - e(1,4)) * (e(1,6) + e(1,5)) * ( 3*(e(1,4) + e(1,7))^2 - (e(1,6) + e(1,5))^2 ); %phi7
 end
 
 % Reduce noise by convolving image, img, with the Gaussian mask
@@ -1236,9 +1236,9 @@ function segmentedMat = localThresholding(img)
     for i=1:h
         for j=1:w
             if(img(i,j)<=(avgMat(i,j)-0.058))
-                segmentedMat(i,j)=0;
+                segmentedMat(i,j)=1;
             else
-                segmentedMat(i,j)=1; 
+                segmentedMat(i,j)=0; 
             end
         end        
         waitbar(i/h, wb);
